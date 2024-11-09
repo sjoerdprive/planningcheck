@@ -1,17 +1,22 @@
-import type { UseFetchOptions } from "nuxt/app";
-import type { NitroFetchRequest } from "nitropack";
+import type { NitroFetchOptions, NitroFetchRequest } from "nitropack";
 
-export const useApi = async <T>(
+export const $api = async <T>(
   url: NitroFetchRequest,
-  options?: UseFetchOptions<T>
+  options?: NitroFetchOptions<NitroFetchRequest>
 ) => {
+  const { addToast } = useToasts();
   const { token } = useAuth();
 
-  return useFetch(url, {
-    ...options,
-    headers: {
-      "x-testauth": token.value || "",
-      ...options?.headers,
-    },
-  });
+  try {
+    return $fetch<T>(url, {
+      ...options,
+      headers: {
+        "x-testauth": token.value || "",
+        ...options?.headers,
+      },
+    });
+  } catch (err: any) {
+    console.error(err);
+    addToast({ message: err, type: "error" });
+  }
 };

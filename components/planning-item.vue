@@ -8,8 +8,12 @@ type Props = {
 };
 
 const { timetable } = defineProps<Props>();
+const emit = defineEmits(["delete"]);
 
-const { name, sharedBy, updatedAt, id, sharedWithEmails } = timetable;
+const { user } = useAuth();
+const { name, ownerName, updatedAt, id, sharedWithEmails } = timetable;
+
+const showControls = computed(() => user?.value?.id === timetable.ownerId);
 
 const cellClass = "p-2";
 
@@ -24,17 +28,28 @@ const formattedUpdatedAt = computed(() =>
 </script>
 
 <template>
-  <tr class="dark:text-white dark:hover:bg-gray-700">
-    <th scope="row" :class="cellClass" class="text-start">
-      <nuxt-link :to="`/plannings/${id}`">
-        {{ name }}
-      </nuxt-link>
-    </th>
-    <td :class="cellClass">{{ sharedBy }}</td>
+  <tr class="dark:text-white dark:odd:bg-gray-700 group">
+    <table-header scope="row">
+      <div class="grid grid-cols-2 gap-1 items-center w-full">
+        <nuxt-link :to="`/plannings/${id}`" class="truncate">
+          {{ name }}
+        </nuxt-link>
+        <div class="flex gap-1 items-center" v-if="showControls">
+          <button
+            @click="$emit('delete', id)"
+            class="text-red-400 dark:text-red-600 flex items-center p-1 group-hover:visible group-focus-within:visible invisible"
+          >
+            <Icon name="iconoir:trash-solid" />
+          </button>
+        </div>
+      </div>
+    </table-header>
+    <td :class="cellClass">{{ ownerName }}</td>
     <td :class="cellClass">
       <div class="flex gap-1 items-center">
         <span
-          class="rounded bg-gray-50 dark:bg-gray-700 py-0.5 px-1 text-sm"
+          class="rounded bg-gray-50 dark:bg-gray-600 py-0.5 px-1 text-sm max-w-28 truncate"
+          :title="email"
           v-for="email in sharedWithEmails"
           >{{ email }}</span
         >

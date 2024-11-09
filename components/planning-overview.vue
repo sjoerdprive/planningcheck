@@ -1,40 +1,29 @@
-<script setup lang="ts">
-import type { Timetable } from "@prisma/client";
-const { token } = useAuth();
-
-type Props = { tables: Timetable[] };
-
-const { tables }: Props = defineProps<Props>();
-
-const headerClass = "p-2 inline-flex items-center gap-2 text-start";
-</script>
-
 <template>
-  <table class="w-full">
+  <table class="w-full table-fixed border-separate border-spacing-y-4">
     <thead>
       <tr class="dark:text-white">
-        <th class="text-start">
-          <div :class="headerClass">
-            <Icon name="iconoir:table-2-columns" />
-            Planning
-          </div>
-        </th>
-        <th class="text-start">
+        <table-header class="text-start">
+          <Icon name="iconoir:table-2-columns" />
+          Planning
+        </table-header>
+        <table-header class="text-start">
           <Icon name="iconoir:user" />
-          <div :class="headerClass">Gedeeld door</div>
-        </th>
-        <th class="text-start">
-          <Icon name="iconoir:user" />
-          <div :class="headerClass">Gedeeld met</div>
-        </th>
-        <th class="text-start">
+          Gemaakt door
+        </table-header>
+        <table-header class="text-start">
+          <Icon name="iconoir:group" />
+          Gedeeld met
+        </table-header>
+        <table-header class="text-start">
           <Icon name="iconoir:clock" />
-          <div :class="headerClass">Laatst bijgewerkt</div>
-        </th>
+          Laatst bijgewerkt
+        </table-header>
       </tr>
     </thead>
     <tbody>
-      <planning-item v-for="planning in tables" :timetable="planning" />
+      <transition-group name="list">
+        <slot />
+      </transition-group>
     </tbody>
   </table>
 </template>

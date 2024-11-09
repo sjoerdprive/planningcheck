@@ -1,7 +1,7 @@
 <template>
-  <div class="flex">
-    <header class="dark:bg-gray-900 h-dvh bg-gray-200">
-      <main-nav />
+  <div class="flex flex-col h-dvh">
+    <header class="dark:bg-gray-900 bg-gray-200 dark:text-white">
+      <div class="p-6">Visiting as guest</div>
     </header>
     <main class="dark:bg-gray-800 grow">
       <suspense>

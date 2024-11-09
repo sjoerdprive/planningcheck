@@ -20,11 +20,13 @@ model Timetable {
   sharedBy         String?
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @default(now())
-  owner            User?      @relation("Owner", fields: [ownerId], references: [id])
+  owner            User?      @relation("Owner", fields: [ownerId, ownerName], references: [id, name])
+  ownerName        String?
   ownerId          String?
   sharedWith       User[]     @relation("SharedWith")
   sharedWithEmails String[]
-  Timeslot         Timeslot[]
+  Timeslot         Timeslot[] @relation("Timetable")
+  description      String?
 }
 
 model Timeslot {
@@ -34,7 +36,7 @@ model Timeslot {
   endTime     DateTime?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @default(now())
-  timetable   Timetable @relation(fields: [timetableId], references: [id])
+  timetable   Timetable @relation("Timetable", fields: [timetableId], references: [id], onDelete: Cascade)
   timetableId String
 }
 
@@ -47,5 +49,6 @@ model User {
   updatedAt        DateTime    @default(now())
   timetables       Timetable[] @relation("Owner")
   sharedTimetables Timetable[] @relation("SharedWith")
-  timetableId      String?
+
+  @@unique([name, id])
 }

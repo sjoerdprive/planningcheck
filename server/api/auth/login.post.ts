@@ -12,5 +12,5 @@ export default defineEventHandler(async (event) => {
 
   const token = btoa(JSON.stringify(user));
 
-  return token;
+  return { user, token };
 });

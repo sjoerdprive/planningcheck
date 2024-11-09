@@ -15,6 +15,7 @@ export default defineNuxtConfig({
   },
   prisma: {
     autoSetupPrisma: true,
+    generateClient: false
   },
   tailwindcss: {
     config: {

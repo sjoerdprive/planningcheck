@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type { User } from "@prisma/client";
 
-const { login } = useAuth();
+const { login, user } = useAuth();
 
-const { data: testUsers, refresh } = await useApi<User[]>("/api/auth/users");
+const { data: testUsers, refresh } = useAsyncData("testUsers", async () => {
+  return await $api<User[]>("/api/auth/users");
+});
 
 const handleUserChange = (event: Event) => {
   const target = event.target as HTMLSelectElement;
@@ -20,7 +22,7 @@ const handleUserChange = (event: Event) => {
 };
 
 const addUser = async () => {
-  await useApi("/api/auth/users", {
+  await $api("/api/auth/users", {
     method: "POST",
   });
   refresh();
@@ -31,6 +33,18 @@ const addUser = async () => {
   <page-header>
     <page-title> Login </page-title>
   </page-header>
+  <div class="dark:text-white">
+    <div v-if="user">
+      <p>Logged in as {{ user.name }}</p>
+      <dl>
+        <dt>Email</dt>
+        <dd>{{ user.email }}</dd>
+      </dl>
+    </div>
+    <div v-else>
+      <p>Not logged in</p>
+    </div>
+  </div>
   <button @click="addUser" class="text-white p-2 dark:bg-gray-700 rounded-lg">
     add user
   </button>

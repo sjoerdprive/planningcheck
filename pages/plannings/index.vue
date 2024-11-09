@@ -1,11 +1,29 @@
 <script setup lang="ts">
 import type { Timetable } from "@prisma/client";
+const { user } = useAuth();
 
-const { data: tables, refresh } = await useApi<Timetable[]>("/api/timetables");
+if (!user) {
+  setPageLayout("guest");
+}
+
+useHead({
+  title: "Planning check! - Overzicht",
+});
+
+const { data: tables, refresh } = useAsyncData("tables", async () => {
+  return await $api<Timetable[]>("/api/timetables");
+});
 
 const addPlanning = async () => {
-  await useApi("/api/timetables", {
+  await $api("/api/timetables", {
     method: "POST",
+  });
+  refresh();
+};
+
+const deletePlanning = async (id: string) => {
+  await $api(`/api/timetables/${id}`, {
+    method: "DELETE",
   });
   refresh();
 };
@@ -14,16 +32,21 @@ const addPlanning = async () => {
 <template>
   <page-header>
     <page-title>Plannings</page-title>
-  </page-header>
-  <div class="p-4 gap-4 flex justify-center flex-col max-w-[900px] mx-auto">
-    <div
-      class="dark:bg-gray-700 p-2 dark:text-white rounded-lg flex gap-4 items-center"
-    >
-      <theme-button @click="addPlanning">
+    <template #right>
+      <theme-button @click="addPlanning" variant="primary">
         <Icon name="iconoir:plus" size="24" />
-        Planning toevoegen
+        Nieuwe planning
       </theme-button>
-    </div>
-    <planning-overview v-if="tables" :tables="tables" />
+    </template>
+  </page-header>
+  <div class="gap-4 flex justify-center flex-col container mx-auto p-6">
+    <planning-overview v-if="tables" :tables="tables">
+      <planning-item
+        v-for="planning in tables"
+        :timetable="planning"
+        :key="planning.id"
+        @delete="deletePlanning"
+      />
+    </planning-overview>
   </div>
 </template>
