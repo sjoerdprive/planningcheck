@@ -29,6 +29,8 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa.pub
           ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
+          ssh-keygen -l -f ~/.ssh/id_rsa
+          ssh-keygen -l -f ~/.ssh/id_rsa.pub
       - name: copy builds to server
         run: |
           rsync -vrm .output/* ${{ secrets.USER_IP }}:/var/www/planningcheck/
