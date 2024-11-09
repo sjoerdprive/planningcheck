@@ -31,4 +31,4 @@ jobs:
           ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
       - name: copy builds to server
         run: |
-          rsync -vrm -e "ssh -i ~/.ssh/id_rsa.pub" .output/* ${{ secrets.USER_IP }}:/var/www/planningcheck/
+          rsync -vrm -e .output/* ${{ secrets.USER_IP }}:/var/www/planningcheck/
