@@ -33,4 +33,4 @@ jobs:
           ssh-keygen -l -f ~/.ssh/id_rsa.pub
       - name: copy builds to server
         run: |
-          rsync -vvrm .output/* ${{ secrets.USER_IP }}:/var/www/planningcheck/
+          rsync -vrm -a .output/* ecosystem.config.cjs ${{ secrets.USER_IP }}:/var/www/planningcheck/
