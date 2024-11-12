@@ -29,8 +29,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa.pub
           ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
-          ssh-keygen -l -f ~/.ssh/id_rsa
-          ssh-keygen -l -f ~/.ssh/id_rsa.pub
       - name: copy builds to server
         run: |
-          rsync -vrm -a .output/* ecosystem.config.cjs ${{ secrets.USER_IP }}:/var/www/planningcheck/
+          rsync -vrm -a .output/* ecosystem.config.cjs postgres.docker-compose.yaml ${{ secrets.USER_IP }}:/var/www/planningcheck/
+          ssh ${{ secrets.USER_IP }} "cd /var/www/planningcheck/ pm2 reload ecosystem.config.cjs npx prisma migrate deploy"
