@@ -33,4 +33,4 @@ jobs:
         run: |
           ssh ${{ secrets.USER_IP }} "cd /var/www/planningcheck/; pm2 stop ecosystem.config.cjs;"
           rsync -vrm -a .output/* ecosystem.config.cjs postgres.docker-compose.yaml ${{ secrets.USER_IP }}:/var/www/planningcheck/
-          ssh ${{ secrets.USER_IP }} "cd /var/www/planningcheck/; npx prisma migrate deploy; pm2 start ecosystem.config.cjs;"
+          ssh ${{ secrets.USER_IP }} "cd /var/www/planningcheck/; npx prisma migrate deploy; npx prisma generate; pm2 start ecosystem.config.cjs;"
