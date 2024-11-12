@@ -28,4 +28,4 @@ jobs:
       - name: build to server
         run: |
           rsync -vrm . ${{ secrets.USER_IP }}:/var/www/planningcheck/
-          ssh ${{ secrets.USER_IP }} "cd /var/www/planningcheck/; npx prisma migrate deploy; npm i; npm run build; pm2 restart ecosystem.config.cjs;"
+          ssh ${{ secrets.USER_IP }} "cd /var/www/planningcheck/; npm i; npx prisma migrate deploy; npx prisma generate; npm run build; pm2 restart ecosystem.config.cjs;"
