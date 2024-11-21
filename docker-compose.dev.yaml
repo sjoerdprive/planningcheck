@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: planningcheck
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - planningcheck-network
+
+  node:
+    image: node:18
+    working_dir: /usr/src/app
+    volumes:
+      - ./:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
+    command: sh -c "npm install && npx prisma migrate dev && npm run dev" # Ensure dev mode
+    ports:
+      - "3001:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/planningcheck?schema=public
+      SMTP_HOST: "smtp.transip.email"
+      SMTP_PORT: 465
+      SMTP_USER: "welcome@artiql.nl"
+      SMTP_PASS: "9$-AF.pE_km#HN2"
+      VITE_API_URL: "http://localhost:3001"
+    depends_on:
+      - postgres
+    networks:
+      - planningcheck-network
+
+volumes:
+  postgres_data:
+
+networks:
+  planningcheck-network:

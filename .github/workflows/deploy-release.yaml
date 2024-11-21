@@ -27,5 +27,5 @@ jobs:
           ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
       - name: build to server
         run: |
-          rsync -vrm --exclude 'node_modules' '.nuxt' '.output' . ${{ secrets.USER_IP }}:/var/www/planningcheck
-          ssh ${{ secrets.USER_IP }} "cd /var/www/planningcheck/; npm i; npx prisma migrate deploy; npx prisma generate; npm run build; pm2 restart ecosystem.config.cjs;"
+          rsync --rsync-path "sudo rsync" -vrm . ${{ secrets.USER_IP }}:/srv/${{ github.event.repository.name }}/
+          ssh ${{ secrets.USER_IP }} "cd /srv/${{ github.event.repository.name }}/; docker compose up --build -d; docker compose restart"
